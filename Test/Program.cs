@@ -22,7 +22,7 @@ namespace Test
             Console.Clear();
 
             string[] arguments = new string[3];
-            Console.WriteLine("Insert name, time, frequancy: ");
+            //Console.WriteLine("Insert name, time, frequancy: ");
             arguments = Console.ReadLine().Split();
 
             string name = "";
@@ -51,15 +51,14 @@ namespace Test
 
             while (canCheck)
             {
-                if (IsRunning(name, out Process kill))
-                {
-                    var startTime = TimeSpan.Zero;
-                    var periodTime = TimeSpan.FromMinutes(frequency);
+                if (!IsRunning(name, out Process kill)) continue;
 
-                    var timer = new System.Threading.Timer((e) => { StartTimer(kill, time, name); }, null, startTime, periodTime);
+                var startTime = TimeSpan.Zero;
+                var periodTime = TimeSpan.FromMinutes(frequency);
 
-                    canCheck = false;
-                }
+                var timer = new System.Threading.Timer((e) => { StartTimer(kill, time, name); }, null, startTime, periodTime);
+
+                canCheck = false;
             }
         }
 
@@ -79,7 +78,7 @@ namespace Test
                 if (runtime >= time) isControllingTime = false;
             }
 
-            Console.WriteLine($"{name} has killed succesfully.");
+            Console.WriteLine(name + " has killed succesfully.");
             process.Kill();
         }
 
@@ -96,12 +95,12 @@ namespace Test
 
             if (pName.Length != 0)
             {
-                Console.WriteLine($"{name} process has been founded. Please wait to kill process.");
+                Console.WriteLine(name + " process has been founded. Please wait to kill process.");
                 kill = pName[0];
                 return true;
             }
 
-            Console.WriteLine($"{name} process has not been founded.");
+            Console.WriteLine(name + " process has not been founded.");
             return false;
         }
     }
