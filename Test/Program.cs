@@ -10,33 +10,33 @@ namespace Test
         /// </summary>
         static void Main(string[] args)
         {
-            SetGlobalVariable();
+            SetGlobalVariable(args);
             Console.ReadKey();
         }
 
         /// <summary>
         /// Function to set/reset the searching system.
         /// </summary>
-        private static void SetGlobalVariable()
+        private static void SetGlobalVariable(string[] args)
         {
-            Console.Clear();
+            if (args.Length == 3)
+            {
+                string name = "";
+                int time = 0;
+                int frequency = 0;
 
-            string[] arguments = new string[3];
-            //Console.WriteLine("Insert name, time, frequancy: ");
-            arguments = Console.ReadLine().Split();
+                if (args[0].Length != 0) name = args[0];
+                if (args[1].Length != 0) time = Convert.ToInt32(args[1]);
+                if (args[2].Length != 0) frequency = Convert.ToInt32(args[2]);
 
-            string name = "";
-            int time = 0;
-            int frequency = 0;
-
-            if (arguments[0].Length != 0) name = arguments[0];
-            else SetGlobalVariable();
-            if (arguments[1].Length != 0) time = Convert.ToInt32(arguments[1]);
-            else SetGlobalVariable();
-            if (arguments[2].Length != 0) frequency = Convert.ToInt32(arguments[2]);
-            else SetGlobalVariable();
-
-            StartSearching(name, time, frequency);
+                StartSearching(name, time, frequency);
+            }
+            else 
+            {
+                Console.WriteLine("Error in Argument Input. \n Please insert Name, Time and frequency for the process.");
+                args = Console.ReadLine().Split();
+                SetGlobalVariable(args);
+            }
         }
 
         /// <summary>
@@ -51,14 +51,18 @@ namespace Test
 
             while (canCheck)
             {
-                if (!IsRunning(name, out Process kill)) continue;
+                var process = IsProcessRunning(name);
 
-                var startTime = TimeSpan.Zero;
-                var periodTime = TimeSpan.FromMinutes(frequency);
+                if (process != null)
+                {
+                    var startTime = TimeSpan.Zero;
+                    var periodTime = TimeSpan.FromMinutes(frequency);
 
-                var timer = new System.Threading.Timer((e) => { StartTimer(kill, time, name); }, null, startTime, periodTime);
+                    var timer = new System.Threading.Timer((e) => { StartTimer(process, time, name); }, null, startTime, periodTime);
 
-                canCheck = false;
+                    canCheck = false;
+
+                }
             }
         }
 
@@ -88,20 +92,17 @@ namespace Test
         /// <param name="name"> Name of process to find </param>
         /// <param name="kill"> Save info of the found Process </param>
         /// <returns> Return True if Process is started, False in opposite case </returns>
-        static bool IsRunning(string name, out Process kill)
+        static Process IsProcessRunning(string name)
         {
             Process[] pName = Process.GetProcessesByName(name);
-            kill = null;
-
             if (pName.Length != 0)
             {
                 Console.WriteLine(name + " process has been founded. Please wait to kill process.");
-                kill = pName[0];
-                return true;
+                return pName[0];
             }
 
             Console.WriteLine(name + " process has not been founded.");
-            return false;
+            return null;
         }
     }
 }
