@@ -11,7 +11,7 @@ namespace Test
         static void Main(string[] args)
         {
             SetGlobalVariable(args);
-            Console.ReadKey();
+            while (Console.ReadKey().Key != ConsoleKey.Q) { }
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Test
             }
             else 
             {
-                Console.WriteLine("Error in Argument Input. \n Please insert Name, Time and frequency for the process.");
+                Console.WriteLine("Error in Argument Input. \nPlease insert Name, Time and frequency for the process.");
                 args = Console.ReadLine().Split();
                 SetGlobalVariable(args);
             }
@@ -61,7 +61,6 @@ namespace Test
                     var timer = new System.Threading.Timer((e) => { StartTimer(process, time, name); }, null, startTime, periodTime);
 
                     canCheck = false;
-
                 }
             }
         }
@@ -91,17 +90,19 @@ namespace Test
         /// </summary>
         /// <param name="name"> Name of process to find </param>
         /// <param name="kill"> Save info of the found Process </param>
-        /// <returns> Return True if Process is started, False in opposite case </returns>
+        /// <returns> Return the process if it is started, null in opposite case </returns>
         static Process IsProcessRunning(string name)
         {
             Process[] pName = Process.GetProcessesByName(name);
             if (pName.Length != 0)
             {
-                Console.WriteLine(name + " process has been founded. Please wait to kill process.");
+                Console.WriteLine(name + " process HAS been founded. Please wait to kill process.");
                 return pName[0];
             }
 
-            Console.WriteLine(name + " process has not been founded.");
+            Console.Clear();
+            Console.WriteLine(name + " process HAS NOT been founded. \nWait for process to start or close application.");
+
             return null;
         }
     }
